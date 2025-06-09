@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en" style="margin: 0; padding: 0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify Your Productiv Account</title>
+    <style>
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+          sans-serif;
+        background-color: #ffffff;
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 40px 30px;
+        background-color: #f7f7f7;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+      }
+      .logo {
+        text-align: center;
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 30px;
+        color: #000;
+      }
+      .content {
+        font-size: 16px;
+        line-height: 1.6;
+      }
+      .button {
+        display: inline-block;
+        background-color: #000;
+        color: #fff;
+        padding: 12px 24px;
+        border-radius: 6px;
+        text-decoration: none;
+        margin-top: 30px;
+        font-weight: 500;
+      }
+      .footer {
+        margin-top: 50px;
+        font-size: 12px;
+        color: #999;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="logo">Productiv</div>
+
+      <div class="content">
+        <p>Hello {{name}},</p>
+        <p>
+          Welcome to <strong>Productiv</strong> — your workspace to manage
+          employees, streamline tasks, and boost productivity within your
+          organization <strong>{{organization_name}}</strong>.
+        </p>
+
+        <p>
+          To get started, please verify your account by clicking the button
+          below:
+        </p>
+
+        <a href="{{verificationLink}}" class="button">Verify Account</a>
+
+        <p>
+          If you didn’t create this account, you can safely ignore this email.
+        </p>
+      </div>
+
+      <div class="footer">
+        &copy; {{now "YYYY"}} Productiv. All rights reserved.
+      </div>
+    </div>
+  </body>
+</html>
