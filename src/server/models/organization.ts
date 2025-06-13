@@ -13,7 +13,10 @@ const Organization = sequelize.define("Organization", {
   country: { type: DataTypes.STRING, allowNull: false },
   industry: { type: DataTypes.STRING, allowNull: false },
   passcode: { type: DataTypes.STRING, allowNull: true },
-  logoUrl: { type: DataTypes.STRING, allowNull: true }
+  logoUrl: { type: DataTypes.STRING, allowNull: true },
+  adminId: {
+    type: DataTypes.UUID,
+  },
 });
 
 export default Organization;

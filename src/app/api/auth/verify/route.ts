@@ -1,13 +1,13 @@
 // app/api/auth/verify/route.ts
 import { initDB } from "@/server/config/db";
-import { Token, User } from "@/server/models";
+import { Token } from "@/server/models";
+import { verifyToken } from "@/server/utils/auth";
 import { NextRequest, NextResponse } from "next/server";
-import { Op } from "sequelize";
 
 export async function POST(req: NextRequest) {
   try {
     await initDB();
-    const { token, email } = await req.json();
+    const { token } = await req.json();
 
     if (!token) {
       return NextResponse.json(
@@ -20,28 +20,38 @@ export async function POST(req: NextRequest) {
       where: {
         token,
         type: "email_verification",
-        expiresAt: {
-          [Op.gt]: new Date(), // Check if token is not expired
-        },
+        // expiresAt: {
+        //   [Op.gt]: Date.now(), // Check if token is not expired
+        // },
       },
     });
+    // console.log(usertoken);
 
-    if (!usertoken) {
+    if (!usertoken || new Date(usertoken.expiresAt).getTime() < Date.now()) {
+      console.log(
+        new Date(usertoken.expiresAt).getTime(),
+        usertoken.expiresAt,
+        Date.now(),
+        new Date(Date.now())
+      );
+      console.log("Invalid or expired token.");
       return NextResponse.json(
         { message: "Invalid or expired token." },
-        { status: 404 }
+        { status: 410 }
       );
     }
-    const user = usertoken.getUser();
-
+    const user = await usertoken.getUser();
+    console.log(user)
     if (!user) {
       return NextResponse.json(
         { message: "Invalid or expired token." },
-        { status: 404 }
+        { status: 410 }
       );
     }
 
-    if (user.email !== email) {
+    const decodeUser = verifyToken(token)
+
+    if (user.email !== decodeUser?.email) {
       return NextResponse.json(
         { message: "Email does not match the token." },
         { status: 400 }

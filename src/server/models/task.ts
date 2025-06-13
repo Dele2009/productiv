@@ -7,9 +7,6 @@ const Task = sequelize.define("Task", {
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
   },
-  organizationId: { type: DataTypes.UUID, allowNull: false },
-  departmentId: { type: DataTypes.UUID },
-  ownerId: { type: DataTypes.UUID }, // User assigned to
   title: { type: DataTypes.STRING, allowNull: false },
   description: DataTypes.TEXT,
   status: {

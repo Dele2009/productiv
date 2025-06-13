@@ -2,8 +2,8 @@ import { DataTypes } from "sequelize";
 import sequelize from "../config/db";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-
-
+import jwt from "jsonwebtoken";
+import { signToken } from "../utils/auth";
 
 const User = sequelize.define(
   "User",
@@ -13,9 +13,10 @@ const User = sequelize.define(
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    organizationId: {
+    employeeId: {
       type: DataTypes.UUID,
-      allowNull: false,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: true
     },
     name: DataTypes.STRING,
     email: { type: DataTypes.STRING, unique: true },
@@ -32,6 +33,9 @@ const User = sequelize.define(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    organizationId: {
+      type: DataTypes.UUID,
+    },
   },
   {
     tableName: "users",
@@ -46,7 +50,8 @@ const User = sequelize.define(
 // Add instance method to generate verification token
 
 (User as any).prototype.generateVerificationToken = function () {
-  return crypto.randomBytes(32).toString("hex");
+  const token = signToken({ id: this.id, email: this.email }, "1d");
+  return token;
 };
 
 export default User;

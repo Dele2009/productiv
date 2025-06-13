@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 import { initDB } from "@/server/config/db";
-import { withValidation } from "@/lib/withValidate";
+import { withValidation } from "@/server/utils/withValidate";
 import { RegisterOwnerData, registerOwnerSchema } from "@/lib/validations/auth";
 import { Organization, User } from "@/server/models";
-import { sendVerificationEmail } from "@/lib/mailer";
+import { sendVerificationEmail } from "@/server/utils/mailer";
+import { getBaseUrl } from "@/server/utils/helpers";
 
 export const POST = withValidation<RegisterOwnerData>(
   registerOwnerSchema,
-  async (data) => {
+  async (data, req) => {
     await initDB();
     const {
       email,
@@ -47,18 +48,25 @@ export const POST = withValidation<RegisterOwnerData>(
       password,
       name,
       role: "admin",
-      organizationId: organization.id,
     });
+
+    user.setOrganization(organization);
+    user.setAdminOf(organization);
+
     const token = await user.generateVerificationToken();
-    user.createToken({
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    await user.createToken({
       token,
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 day
+      expiresAt, // 1 day
       type: "email_verification",
     });
+    console.log(expiresAt);
+    const userToken = await user.getToken();
+
     await sendVerificationEmail(user.email, {
       name: user.name,
-      organization_name: organization.name,
-      verificationLink: `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify?token=${user.getToken().token}&email=${user.email}`,
+      organizationName: organization.name,
+      verificationLink: `${getBaseUrl(req)}/auth/verify?token=${userToken.token}&email=${user.email}`,
     });
     return NextResponse.json({
       message: "Organization account created successfully",

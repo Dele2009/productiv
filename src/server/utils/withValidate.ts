@@ -5,7 +5,7 @@ import { validateSchema } from "./validate";
 // lib/withValidation.ts
 export function withValidation<T>(
   schema: AnySchema,
-  handler: (validatedBody: T) => Promise<NextResponse>
+  handler: (validatedBody: T, request: NextRequest) => Promise<NextResponse>
 ) {
   return async (req: NextRequest) => {
     const body = await req.json();
@@ -14,7 +14,7 @@ export function withValidation<T>(
       return NextResponse.json({ success: false, errors }, { status: 400 });
     }
     try {
-      return await handler(data!);
+      return await handler(data!, req);
     } catch (error) {
       console.error("Handler error:", error);
       return NextResponse.json(

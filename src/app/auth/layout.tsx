@@ -12,7 +12,7 @@ export default function AuthLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="flex flex-col items-center justify-center min-h-screen bg-muted py-10">
+      <body className="flex flex-col items-center justify-center min-h-screen bg-muted py-20">
         {/* <img src="/logo.png" alt="logo" className="h-20 m-auto" /> */}
 
         {children}

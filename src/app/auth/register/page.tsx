@@ -25,6 +25,7 @@ export default function RegisterPage() {
     formState: { errors, isSubmitting },
     setValue,
     reset,
+    watch,
   } = useForm<RegisterOwnerData>({
     resolver: yupResolver(registerOwnerSchema),
   });
@@ -38,12 +39,18 @@ export default function RegisterPage() {
       const response = await axios.post("/api/auth/register", data);
       toast(response.data.message, {
         description: "Check Your email to verify this account.",
+        position: "top-center",
       });
       reset();
       // TODO: POST to /api/auth/register
     } catch (err: unknown) {
-      console.error("Registration error:", err);
-      setErrorMsg("Registration failed.");
+      console.error("Registration error:", err.response);
+      toast("Registration failed.", {
+        description:
+          (err as any)?.response?.data?.error ||
+          "An error occurred during registration.",
+        position: "top-center",
+      });
     }
   };
 
@@ -53,10 +60,6 @@ export default function RegisterPage() {
         <h2 className="text-3xl font-semibold text-center">
           Register Organization Account
         </h2>
-
-        {errorMsg && (
-          <p className="text-red-500 text-sm text-center">{errorMsg}</p>
-        )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           {/* Owner Info */}
@@ -115,6 +118,7 @@ export default function RegisterPage() {
               <div className="grid w-full max-w-sm items-center gap-3">
                 <Label>Organization Type</Label>
                 <Select
+                  value={watch("organizationType")}
                   onValueChange={(val) => setValue("organizationType", val)}
                 >
                   <SelectTrigger className="w-full">
@@ -133,7 +137,10 @@ export default function RegisterPage() {
               </div>
               <div className="grid w-full max-w-sm items-center gap-3">
                 <Label>Industry</Label>
-                <Select onValueChange={(val) => setValue("industry", val)}>
+                <Select
+                  value={watch("industry")}
+                  onValueChange={(val) => setValue("industry", val)}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
@@ -151,7 +158,10 @@ export default function RegisterPage() {
               </div>
               <div className="grid w-full max-w-sm items-center gap-3">
                 <Label>Organization Size</Label>
-                <Select onValueChange={(val) => setValue("size", val)}>
+                <Select
+                  value={watch("size")}
+                  onValueChange={(val) => setValue("size", val)}
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select size" />
                   </SelectTrigger>
@@ -163,7 +173,7 @@ export default function RegisterPage() {
                 </Select>
                 <p className="text-sm text-red-500">{errors.size?.message}</p>
               </div>
-              <div className="grid w-full max-w-sm items-center gap-3">
+              <div className="grid w-full max-w-sm md:col-span-2 items-center gap-3">
                 <Label>Country</Label>
                 <Input placeholder="Country" {...register("country")} />
                 <p className="text-sm text-red-500">

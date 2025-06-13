@@ -7,10 +7,6 @@ const Department = sequelize.define("Department", {
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
   },
-  organizationId: {
-    type: DataTypes.UUID,
-    allowNull: false,
-  },
   name: { type: DataTypes.STRING, allowNull: false },
 });
 

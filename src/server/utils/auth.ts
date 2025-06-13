@@ -2,8 +2,8 @@ import jwt, { SignOptions } from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret";
 
-export function signToken(user: any, expiresIn: SignOptions["expiresIn"] = "7d") {
-  return jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
+export function signToken(data: Record<string, string>, expiresIn: SignOptions["expiresIn"] = "7d") {
+  return jwt.sign(data, JWT_SECRET, {
     expiresIn,
   });
 }
