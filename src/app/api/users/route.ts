@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import User from "@/server/models/user";
 import { initDB } from "@/server/config/db";
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
     await initDB();
     const users = await User.findAll({
