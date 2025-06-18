@@ -22,8 +22,6 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`antialiased`}>
         <Load>
           <SidebarProvider>
             <AppSidebar />
@@ -55,7 +53,5 @@ export default function DashboardLayout({
             </SidebarInset>
           </SidebarProvider>
         </Load>
-      </body>
-    </html>
   );
 }

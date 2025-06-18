@@ -14,13 +14,8 @@ declare module "next-auth" {
     };
   }
 
-  interface Session extends User {
-    organization: {
-      id: string;
-      name: string;
-      slug: string;
-      avatar: string;
-    };
+  interface Session {
+    user: User;
   }
 }
 

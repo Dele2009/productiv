@@ -19,11 +19,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         role: { label: "Role", type: "text" },
         employeeId: { label: "EmployeeId", type: "text" },
       },
-      async authorize(credentials) {
-        if (!credentials?.email) return null;
+      authorize: async (credentials) => {
         await initDB();
-        console.log(credentials);
-        // find the user by email first
+
+        if (!credentials?.email) return null;
+
         const user = await User.findOne({
           where: { email: credentials.email },
           include: [
@@ -34,22 +34,32 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           ],
         });
 
-        // console.log(user)
-
-        if (!user) return null;
+        if (!user) {
+          (credentials as any).error = "User not found";
+          return null;
+        }
 
         const isValid = await bcrypt.compare(
           credentials.password as string,
           user.password
         );
-        if (!isValid) throw new Error("InvalidCredentials");
 
-        if (!user.isActive) throw new Error("AccountSuspended");
-        if (!user.isVerified) throw new Error("AccountUnverified");
+        if (!isValid) {
+          (credentials as any).error = "Invalid password";
+          return null;
+        }
+
+        if (!user.isActive) {
+          (credentials as any).error = "Account Suspended";
+          return null;
+        }
+
+        if (!user.isVerified) {
+          (credentials as any).error = "Account Unverified";
+          return null;
+        }
 
         if (credentials.role === "admin") {
-          // Organization: match password normally
-
           return {
             id: user.id,
             email: user.email,
@@ -63,8 +73,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             },
           };
         } else if (credentials.role === "employee") {
-          // Employee: match passcode == password and match IDs
-          if (credentials.employeeId !== user.employeeId) return null;
+          if (credentials.employeeId !== user.employeeId) {
+            (credentials as any).error = "Invalid Employee ID";
+            return null;
+          }
 
           return {
             id: user.id,
@@ -79,33 +91,29 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             },
           };
         }
+
+        (credentials as any).error = "Invalid role";
         return null;
       },
     }),
   ],
   pages: {
-    error: "/auth/login",
     signIn: "/auth/login",
   },
   callbacks: {
     jwt: async ({ token, user }) => {
+      console.log(user)
       if (user) {
-        token.role = user.role;
-        token.id = user.id;
-        token.name = user.name;
-        token.email = user.email;
-        token.organization = user.organization;
+        return {...token, ...user}
       }
       return token;
     },
     session: async ({ session, token }) => {
+      console.log(token)
       if (token?.role) {
-        (session as any).role = token.role;
-        (session as any).id = token.id;
-        (session as any).name = token.name;
-        (session as any).email = token.email;
-        (session as any).organization = token.organization;
+        session.user = token;
       }
+      console.log(session)
       return session;
     },
   },

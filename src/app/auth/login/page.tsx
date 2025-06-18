@@ -39,7 +39,7 @@ const errors = {
   InvalidCredentials: "Email or password is incorrect.",
   AccountSuspended: "Your account has been suspended.",
   AccountUnverified: "Your account is not verified.",
-  default: "Unable to sign in."
+  default: "Unable to sign in.",
 };
 
 type Errors = typeof errors;
@@ -47,7 +47,7 @@ type AdminLoginData = yup.InferType<typeof adminLoginSchema>;
 type EmployeeLoginData = yup.InferType<typeof employeeLoginSchema>;
 
 const SignInError = ({ error }: { error: keyof Errors }) => {
-  const errorMsg = error && (errors[error] ?? errors.default);
+  const errorMsg = errors[error] || error;
   return (
     <Alert variant="destructive">
       <CheckCircle2Icon />
@@ -60,8 +60,8 @@ const SignInError = ({ error }: { error: keyof Errors }) => {
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  const error = (searchParams.get("error") as keyof Errors) || "";
+  const [errorMsg, setErrorMsg] = useState("");
+  const callbackUrl = (searchParams.get("callbackUrl")) || "";
   const [activeTab, setActiveTab] = useState<"admin" | "employee" | string>(
     "admin"
   );
@@ -87,28 +87,24 @@ export default function LoginPage() {
   const onTabChange = (value: string) => setActiveTab(value);
 
   const onAdminSubmit = async (data: AdminLoginData) => {
-    // setErrorMsg("");
-    try {
-      // NextAuth expects credentials matching your `CredentialsProvider`
-      const res = await signIn("credentials", {
-        email: data.email,
-        password: data.password,
-        role: "admin",
-      });
-      console.log(res);
-      if (!res?.ok) return;
+    setErrorMsg("");
+    // NextAuth expects credentials matching your `CredentialsProvider`
+    const res = await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      role: "admin",
+      redirect: false,
+    });
+    console.log(res);
+    if (res?.error) return setErrorMsg(res.error || "Invalid Credentials");
 
-      // Wait for session to be updated
-      const session = await getSession();
-      console.log(session);
+    // Wait for session to be updated
+    const session = await getSession();
+    console.log(session);
 
-      const slug = session?.organization?.slug;
+    const slug = session?.user?.organization?.slug;
 
-      // if (slug) {
-      router.push(`/organization/${slug}/dashboard`);
-    } catch {
-      // setErrorMsg("Login failed.");
-    }
+    router.push(callbackUrl || `/organization/${slug}/dashboard`);
   };
 
   const onEmployeeSubmit = async (data: EmployeeLoginData) => {
@@ -137,7 +133,7 @@ export default function LoginPage() {
           <h2 className="text-2xl font-bold text-center">
             Login to your account
           </h2>
-          {error && <SignInError error={error} />}
+          {errorMsg && <SignInError error={errorMsg as keyof Errors} />}
 
           <Tabs value={activeTab} onValueChange={onTabChange}>
             <TabsList className="mb-6 w-full">

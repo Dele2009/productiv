@@ -12,32 +12,41 @@ User.hasMany(Task, { as: "tasks" });
 User.hasOne(Token);
 Token.belongsTo(User);
 
-User.belongsTo(Organization, { as: "organization", foreignKey: "organizationId" });
+User.belongsTo(Organization, {
+  as: "organization",
+  foreignKey: "organizationId",
+});
 Organization.hasMany(User, {
   as: "members",
   foreignKey: "organizationId",
   onDelete: "CASCADE",
 });
 
-User.hasOne(Organization, { as: "adminOf", foreignKey: "adminId", constraints: false });
+User.hasOne(Organization, {
+  as: "adminOf",
+  foreignKey: "adminId",
+  constraints: false,
+});
 Organization.belongsTo(User, {
   as: "admin",
   foreignKey: "adminId",
   constraints: false,
 });
 
-User.belongsToMany(Team, { through: "UserTeam" })
-Team.belongsToMany(User, {through: "UserTeam" });
+User.belongsToMany(Team, { through: "UserTeam" });
+Team.belongsToMany(User, { through: "UserTeam" });
 
-Team.belongsTo(Organization)
-Team.belongsTo(Department)
+Team.belongsTo(Organization);
+Team.belongsTo(Department);
 
 Organization.hasMany(Department);
 Department.belongsTo(Organization);
 
-Task.belongsTo(Organization)
+Task.belongsTo(Organization);
 Task.belongsTo(Department);
 Task.belongsTo(User);
+
+Department.hasMany(Task);
 
 User.belongsToMany(Department, { through: "UserMembership" });
 Department.belongsToMany(User, { through: "UserMembership" });
