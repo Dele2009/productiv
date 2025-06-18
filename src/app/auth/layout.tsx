@@ -1,3 +1,4 @@
+import { ThemeToggle } from "@/components/themetoggler";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -12,10 +13,11 @@ export default function AuthLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="flex flex-col items-center justify-center min-h-screen bg-muted py-20">
-        {/* <img src="/logo.png" alt="logo" className="h-20 m-auto" /> */}
-
+      <body className="flex flex-col items-center justify-center min-h-screen bg-muted py-20 relative">
         {children}
+        <div className="fixed bottom-10 right-10">
+          <ThemeToggle />
+        </div>
       </body>
     </html>
   );

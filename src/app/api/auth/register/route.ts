@@ -66,7 +66,7 @@ export const POST = withValidation<RegisterOwnerData>(
     await sendVerificationEmail(user.email, {
       name: user.name,
       organizationName: organization.name,
-      verificationLink: `${getBaseUrl(req)}/auth/verify?token=${userToken.token}&email=${user.email}`,
+      verificationLink: `${getBaseUrl(req)}/auth/verify/${userToken.token}?email=${user.email}`,
     });
     return NextResponse.json({
       message: "Organization account created successfully",

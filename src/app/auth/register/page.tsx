@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+// import { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -30,10 +30,10 @@ export default function RegisterPage() {
     resolver: yupResolver(registerOwnerSchema),
   });
 
-  const [errorMsg, setErrorMsg] = useState("");
+  // const [errorMsg, setErrorMsg] = useState("");
 
   const onSubmit = async (data: RegisterOwnerData) => {
-    setErrorMsg("");
+    // setErrorMsg("");
     try {
       console.log(data);
       const response = await axios.post("/api/auth/register", data);
@@ -43,7 +43,7 @@ export default function RegisterPage() {
       });
       reset();
       // TODO: POST to /api/auth/register
-    } catch (err: unknown) {
+    } catch (err: any) {
       console.error("Registration error:", err.response);
       toast("Registration failed.", {
         description:

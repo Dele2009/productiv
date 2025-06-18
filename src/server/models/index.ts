@@ -1,6 +1,7 @@
 import Department from "./department";
 import Organization from "./organization";
 import Task from "./task";
+import Team from "./team";
 import Token from "./token";
 import User from "./user";
 // import UserMembership from "./user-membership";
@@ -25,10 +26,16 @@ Organization.belongsTo(User, {
   constraints: false,
 });
 
+User.belongsToMany(Team, { through: "UserTeam" })
+Team.belongsToMany(User, {through: "UserTeam" });
+
+Team.belongsTo(Organization)
+Team.belongsTo(Department)
+
 Organization.hasMany(Department);
 Department.belongsTo(Organization);
 
-Task.belongsTo(Organization);
+Task.belongsTo(Organization)
 Task.belongsTo(Department);
 Task.belongsTo(User);
 

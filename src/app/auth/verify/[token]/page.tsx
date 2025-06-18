@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -16,8 +16,8 @@ import Link from "next/link";
 import { cn } from "@/lib/utils"; // Assuming you have a cn utility for conditional class merging
 
 export default function VerifyEmailPage() {
+  const {token} = useParams()
   const searchParams = useSearchParams();
-  const token = searchParams.get("token");
   const email = searchParams.get("email");
 
   const [status, setStatus] = useState<
@@ -41,7 +41,7 @@ export default function VerifyEmailPage() {
     const verifyEmail = async () => {
       try {
         setStatus("loading");
-        const res = await axios.post("/api/auth/verify", { token, email });
+        const res = await axios.post("/api/auth/verify", { token });
         setStatus("success");
         setMessage(res.data.message || "Email verified successfully!");
       } catch (err: any) {

@@ -20,12 +20,8 @@ export async function POST(req: NextRequest) {
       where: {
         token,
         type: "email_verification",
-        // expiresAt: {
-        //   [Op.gt]: Date.now(), // Check if token is not expired
-        // },
       },
     });
-    // console.log(usertoken);
 
     if (!usertoken || new Date(usertoken.expiresAt).getTime() < Date.now()) {
       console.log(
@@ -49,7 +45,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const decodeUser = verifyToken(token)
+    const decodeUser: any = verifyToken(token)
 
     if (user.email !== decodeUser?.email) {
       return NextResponse.json(

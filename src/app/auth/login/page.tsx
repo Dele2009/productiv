@@ -15,6 +15,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { CheckCircle2Icon } from "lucide-react";
+import { getSession, signIn } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const adminLoginSchema = yup.object({
   email: yup.string().email("Invalid email").required("Email required"),
@@ -29,12 +33,35 @@ const employeeLoginSchema = yup.object({
   employeeId: yup.string().required("Employee ID required"),
   orgPasscode: yup.string().required("Organization passcode required"),
 });
+const errors = {
+  CredentialsSignin:
+    "Sign in failed. Check the details you provided are correct.",
+  InvalidCredentials: "Email or password is incorrect.",
+  AccountSuspended: "Your account has been suspended.",
+  AccountUnverified: "Your account is not verified.",
+  default: "Unable to sign in."
+};
 
+type Errors = typeof errors;
 type AdminLoginData = yup.InferType<typeof adminLoginSchema>;
 type EmployeeLoginData = yup.InferType<typeof employeeLoginSchema>;
 
+const SignInError = ({ error }: { error: keyof Errors }) => {
+  const errorMsg = error && (errors[error] ?? errors.default);
+  return (
+    <Alert variant="destructive">
+      <CheckCircle2Icon />
+      <AlertTitle>Login Error</AlertTitle>
+      <AlertDescription>{errorMsg}</AlertDescription>
+    </Alert>
+  );
+};
+
 export default function LoginPage() {
-  const [errorMsg, setErrorMsg] = useState("");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const error = (searchParams.get("error") as keyof Errors) || "";
   const [activeTab, setActiveTab] = useState<"admin" | "employee" | string>(
     "admin"
   );
@@ -60,22 +87,46 @@ export default function LoginPage() {
   const onTabChange = (value: string) => setActiveTab(value);
 
   const onAdminSubmit = async (data: AdminLoginData) => {
-    setErrorMsg("");
+    // setErrorMsg("");
     try {
-      console.log("Admin login data:", data);
-      // TODO: call your admin login API here
-    } catch (err: unknown) {
-      setErrorMsg("Admin login failed.");
+      // NextAuth expects credentials matching your `CredentialsProvider`
+      const res = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        role: "admin",
+      });
+      console.log(res);
+      if (!res?.ok) return;
+
+      // Wait for session to be updated
+      const session = await getSession();
+      console.log(session);
+
+      const slug = session?.organization?.slug;
+
+      // if (slug) {
+      router.push(`/organization/${slug}/dashboard`);
+    } catch {
+      // setErrorMsg("Login failed.");
     }
   };
 
   const onEmployeeSubmit = async (data: EmployeeLoginData) => {
-    setErrorMsg("");
+    // setErrorMsg("");
     try {
-      console.log("Employee login data:", data);
-      // TODO: call your employee login API here
-    } catch (err: unknown) {
-      setErrorMsg("Employee login failed.");
+      // If you want to handle employees separately, you'd need
+      // to adjust your CredentialsProvider to check these credentials.
+      // But normally you'd reuse "credentials":
+      const res = await signIn("credentials", {
+        email: data.email,
+        password: data.orgPasscode,
+        employeeId: data.employeeId,
+        role: "employee",
+      });
+
+      console.log(res);
+    } catch {
+      // setErrorMsg("Login failed.");
     }
   };
 
@@ -86,9 +137,7 @@ export default function LoginPage() {
           <h2 className="text-2xl font-bold text-center">
             Login to your account
           </h2>
-          {errorMsg && (
-            <p className="text-red-500 text-sm text-center">{errorMsg}</p>
-          )}
+          {error && <SignInError error={error} />}
 
           <Tabs value={activeTab} onValueChange={onTabChange}>
             <TabsList className="mb-6 w-full">

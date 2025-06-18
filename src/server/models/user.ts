@@ -1,8 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db";
 import bcrypt from "bcrypt";
-import crypto from "crypto";
-import jwt from "jsonwebtoken";
+
 import { signToken } from "../utils/auth";
 
 const User = sequelize.define(
@@ -14,9 +13,8 @@ const User = sequelize.define(
       primaryKey: true,
     },
     employeeId: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      allowNull: true
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     name: DataTypes.STRING,
     email: { type: DataTypes.STRING, unique: true },
