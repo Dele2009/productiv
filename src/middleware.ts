@@ -7,8 +7,8 @@ const secret = process.env.NEXTAUTH_SECRET!;
 
 export async function middleware(request: NextRequest) {
   const token =
-    request.cookies.get("next-auth.session-token")?.value || // Dev (http)
-    request.cookies.get("__Secure-next-auth.session-token")?.value; // Prod (https)
+    request.cookies.get("authjs.session-token")?.value || // Dev (http)
+    request.cookies.get("__Secure-authjs.session-token")?.value; // Prod (https)
 
   if (!token) {
     const loginUrl = new URL("/auth/login", request.url);
