@@ -18,8 +18,9 @@ export default sequelize;
 export async function initDB() {
   try {
     await sequelize.authenticate();
-    await sequelize.sync({ alter: true });
-    // await sequelize.sync({ force: true });
+    if (process.env.NODE_ENV !== "production") {
+      await sequelize.sync({ alter: true }); // Use migrations in production instead!
+    }
     console.log("DB connected and synced ✅");
   } catch (err) {
     console.error("DB connection failed:", err);

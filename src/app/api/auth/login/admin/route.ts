@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 import { NextResponse } from "next/server";
 import User from "@/server/models/user";
 import bcrypt from "bcrypt";

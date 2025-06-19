@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 import { NextResponse } from "next/server";
 import { initDB } from "@/server/config/db";
 import { withValidation } from "@/server/utils/withValidate";

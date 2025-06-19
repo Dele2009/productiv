@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 // app/api/auth/verify/route.ts
 import { initDB } from "@/server/config/db";
 import { Token } from "@/server/models";
@@ -37,7 +38,7 @@ export async function POST(req: NextRequest) {
       );
     }
     const user = await usertoken.getUser();
-    console.log(user)
+    console.log(user);
     if (!user) {
       return NextResponse.json(
         { message: "Invalid or expired token." },
@@ -45,7 +46,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const decodeUser: any = verifyToken(token)
+    const decodeUser: any = verifyToken(token);
 
     if (user.email !== decodeUser?.email) {
       return NextResponse.json(

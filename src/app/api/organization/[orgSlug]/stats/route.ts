@@ -29,6 +29,8 @@
 // };
 
 // app/api/organization/[slug]/dashboard/route.ts
+export const runtime = "nodejs";
+
 import { NextRequest, NextResponse } from "next/server";
 import { Op } from "sequelize";
 import { User, Organization, Task, Department } from "@/server/models";

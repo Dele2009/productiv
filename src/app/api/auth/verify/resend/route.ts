@@ -1,3 +1,6 @@
+export const runtime = "nodejs";
+
+import { initDB } from "@/server/config/db";
 import { Organization, User } from "@/server/models";
 import { getBaseUrl } from "@/server/utils/helpers";
 import { sendVerificationEmail } from "@/server/utils/mailer";
@@ -5,6 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
+    await initDB();
     const { email } = await req.json();
 
     if (!email) {
