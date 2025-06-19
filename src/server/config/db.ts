@@ -1,10 +1,11 @@
 import { Sequelize } from "sequelize";
 import mysql2 from "mysql2";
-
+import pg from "pg";
 const sequelize =
   process.env.NODE_ENV === "production"
     ? new Sequelize(process.env.DATABASE_URL!, {
         dialect: "postgres",
+        dialectModule: pg,
         logging: false,
       })
     : new Sequelize(
