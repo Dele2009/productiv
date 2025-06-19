@@ -1,10 +1,11 @@
 // src/app/api/auth/[...nextauth]/route.ts
+export const runtime = "nodejs"
+
 
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { Organization, User } from "./server/models";
-import { initDB } from "./server/config/db";
 
 // Remember to connect to your DB first
 // (await sequelize.authenticate()) somewhere if not already connected
@@ -20,7 +21,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         employeeId: { label: "EmployeeId", type: "text" },
       },
       authorize: async (credentials) => {
-        await initDB();
 
         if (!credentials?.email) return null;
 
