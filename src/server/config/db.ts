@@ -36,6 +36,8 @@ export async function initDB() {
     await sequelize.authenticate();
     if (!isProd) {
       await sequelize.sync({ alter: true });
+    } else {
+      await sequelize.sync();
     }
     console.log("✅ DB connected and synced");
   } catch (err) {
