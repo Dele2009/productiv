@@ -6,13 +6,16 @@ import type { NextRequest } from "next/server";
 const secret = process.env.NEXTAUTH_SECRET;
 
 export async function middleware(request: NextRequest) {
-  console.log(request.cookies.getAll());
+  // console.log(request.cookies.getAll());
   const token = await getToken({
     req: request,
     secret,
-    cookieName: "__Secure-authjs.session-token", // ← Ensure this matches your actual cookie
+    cookieName:
+      process.env.NODE_ENV === "development"
+        ? "authjs.session-token"
+        : "__Secure-authjs.session-token", 
   });
-  console.log(token);
+  // console.log(token);
 
   // No session? Redirect to login
   if (!token) {

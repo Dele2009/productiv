@@ -20,10 +20,10 @@ const handleGet = async ({ user }: HandlerArgs) => {
   });
   const membersCount = await User.count({ where: { organizationId: OrganizationId } });
   const openTasksCount = await Task.count({
-    where: { OrganizationId, status: "open" },
+    where: { OrganizationId, status: "todo" },
   });
   const closedTasksCount = await Task.count({
-    where: { OrganizationId, status: "closed" },
+    where: { OrganizationId, status: "done" },
   });
   const activityLogsCount = 10; // Replace with actual activity logs count when available
 
@@ -37,7 +37,7 @@ const handleGet = async ({ user }: HandlerArgs) => {
       },
       {
         model: Task,
-        where: { status: "open" },
+        where: { status: "todo" },
         required: false,
       },
     ],
