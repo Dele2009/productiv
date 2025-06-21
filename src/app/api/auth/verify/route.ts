@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
     if (!token) {
       return NextResponse.json(
-        { message: "Token is required." },
+        { error: "Token is required." },
         { status: 400 }
       );
     }
@@ -24,16 +24,18 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    if (!usertoken || new Date(usertoken.expiresAt).getTime() < Date.now()) {
-      console.log(
-        new Date(usertoken.expiresAt).getTime(),
-        usertoken.expiresAt,
-        Date.now(),
-        new Date(Date.now())
-      );
-      console.log("Invalid or expired token.");
+    if (!usertoken) {
+      console.log("Invalid token.");
       return NextResponse.json(
-        { message: "Invalid or expired token." },
+        { error: "Invalid token." },
+        { status: 404 }
+      );
+    }
+
+    if (new Date(usertoken.expiresAt).getTime() < Date.now()) {
+      console.log("Expired token.");
+      return NextResponse.json(
+        { error: "Expired token." },
         { status: 410 }
       );
     }
@@ -41,7 +43,7 @@ export async function POST(req: NextRequest) {
     console.log(user);
     if (!user) {
       return NextResponse.json(
-        { message: "Invalid or expired token." },
+        { error: "Invalid or expired token." },
         { status: 410 }
       );
     }
@@ -50,7 +52,7 @@ export async function POST(req: NextRequest) {
 
     if (user.email !== decodeUser?.email) {
       return NextResponse.json(
-        { message: "Email does not match the token." },
+        { error: "Email does not match the token." },
         { status: 400 }
       );
     }
@@ -66,7 +68,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Verification Error:", error);
     return NextResponse.json(
-      { message: "Internal server error." },
+      { error: "Internal server error." },
       { status: 500 }
     );
   }

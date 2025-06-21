@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
 
     if (!email) {
       return NextResponse.json(
-        { message: "Email is required to resend verification." },
+        { error: "Email is required to resend verification." },
         { status: 400 }
       );
     }

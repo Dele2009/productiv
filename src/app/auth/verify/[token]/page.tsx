@@ -80,7 +80,7 @@ export default function VerifyEmailPage() {
       console.error(err);
       setResendStatus("error");
       setResendMessage(
-        err.message ||
+        err.response.data.error ||
           "Failed to resend verification email. Please try again later."
       );
     }
