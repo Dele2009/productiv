@@ -7,6 +7,7 @@ const secret = process.env.NEXTAUTH_SECRET;
 
 export async function middleware(request: NextRequest) {
   const token = await getToken({ req: request, secret });
+  console.log(token)
 
   // No session? Redirect to login
   if (!token) {
