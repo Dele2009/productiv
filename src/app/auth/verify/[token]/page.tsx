@@ -16,7 +16,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils"; // Assuming you have a cn utility for conditional class merging
 
 export default function VerifyEmailPage() {
-  const {token} = useParams()
+  const { token } = useParams();
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
 
@@ -89,13 +89,13 @@ export default function VerifyEmailPage() {
   const getCardClasses = (currentStatus: typeof status) => {
     switch (currentStatus) {
       case "success":
-        return "border-green-400 text-green-700 bg-green-50"; // Light green for success
+        return "text-green-700"; // Light green for success
       case "error":
-        return "border-red-400 text-red-700 bg-red-50"; // Light red for error
+        return "text-red-700"; // Light red for error
       case "expired":
-        return "border-yellow-400 text-yellow-700 bg-yellow-50"; // Light yellow for expired
+        return "text-yellow-700"; // Light yellow for expired
       case "loading":
-        return "border-blue-400 text-blue-700 bg-blue-50"; // Light blue for loading/info
+        return ""; // Light blue for loading/info
       default:
         return ""; // Default styling
     }
@@ -114,7 +114,7 @@ export default function VerifyEmailPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-muted px-4">
+   
       <Card className={cn("max-w-md w-full shadow-xl", getCardClasses(status))}>
         <CardHeader className="text-center">
           {status === "loading" && (
@@ -193,6 +193,5 @@ export default function VerifyEmailPage() {
           )}
         </CardContent>
       </Card>
-    </div>
   );
 }

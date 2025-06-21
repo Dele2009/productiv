@@ -2,7 +2,7 @@ export const runtime = "nodejs";
 // app/api/auth/verify/route.ts
 import { initDB } from "@/server/config/db";
 import { Token } from "@/server/models";
-import { verifyToken } from "@/server/utils/auth";
+import { verifyToken } from "@/server/utils/helpers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {

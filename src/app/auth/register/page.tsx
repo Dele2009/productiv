@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-// import { useState } from "react";
+import { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -17,8 +17,13 @@ import {
 } from "@/components/ui/select";
 import axios from "axios";
 import { toast } from "sonner";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { CheckCircle2Icon } from "lucide-react";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -30,10 +35,10 @@ export default function RegisterPage() {
     resolver: yupResolver(registerOwnerSchema),
   });
 
-  // const [errorMsg, setErrorMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const onSubmit = async (data: RegisterOwnerData) => {
-    // setErrorMsg("");
+    setErrorMsg("");
     try {
       console.log(data);
       const response = await axios.post("/api/auth/register", data);
@@ -42,24 +47,29 @@ export default function RegisterPage() {
         position: "top-center",
       });
       reset();
-      // TODO: POST to /api/auth/register
+      router.push("/auth/register/success");
     } catch (err: any) {
       console.error("Registration error:", err.response);
-      toast("Registration failed.", {
-        description:
-          (err as any)?.response?.data?.error ||
-          "An error occurred during registration.",
-        position: "top-center",
-      });
+      setErrorMsg(
+        (err as any)?.response?.data?.error ||
+          "An error occurred during registration."
+      );
     }
   };
 
   return (
-    <Card className="w-full max-w-3xl shadow-2xl m-auto">
+    <Card className=" w-full max-w-3xl shadow-2xl m-auto">
       <CardContent className="p-8 space-y-8">
         <h2 className="text-3xl font-semibold text-center">
           Register Organization Account
         </h2>
+        {errorMsg && (
+          <Alert variant="destructive">
+            <CheckCircle2Icon />
+            <AlertTitle>Registration failed.</AlertTitle>
+            <AlertDescription>{errorMsg}</AlertDescription>
+          </Alert>
+        )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           {/* Owner Info */}
@@ -173,9 +183,13 @@ export default function RegisterPage() {
                 </Select>
                 <p className="text-sm text-red-500">{errors.size?.message}</p>
               </div>
-              <div className="grid w-full max-w-sm md:col-span-2 items-center gap-3">
+              <div className="grid w-full md:col-span-2 items-center gap-3">
                 <Label>Country</Label>
-                <Input placeholder="Country" {...register("country")} />
+                <Input
+                  placeholder="Country"
+                  {...register("country")}
+                  className="w-full"
+                />
                 <p className="text-sm text-red-500">
                   {errors.country?.message}
                 </p>
@@ -187,6 +201,12 @@ export default function RegisterPage() {
             {isSubmitting ? "Registering..." : "Register Organization"}
           </Button>
         </form>
+        <p className="text-center text-sm">
+          Already have or belong to an organization?{" "}
+          <Link href="/auth/login" className="text-primary underline">
+            Login
+          </Link>
+        </p>
       </CardContent>
     </Card>
   );

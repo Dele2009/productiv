@@ -26,7 +26,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import Image from "next/image";
+import Logo from "./logo";
 
 const navData = {
   navMain: [
@@ -151,9 +151,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
-                <Image src="/logo.png" alt="" width={190} height={80} />
-              </a>
+             <Logo/>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

@@ -1,39 +1,29 @@
+// src/middleware.ts
+import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import jwt from "jsonwebtoken";
 
-// If you're using `NEXTAUTH_SECRET`, use the same one here
-const secret = process.env.NEXTAUTH_SECRET!;
+const secret = process.env.NEXTAUTH_SECRET;
 
 export async function middleware(request: NextRequest) {
-  const token =
-    request.cookies.get("authjs.session-token")?.value || // Dev (http)
-    request.cookies.get("__Secure-authjs.session-token")?.value; // Prod (https)
+  const token = await getToken({ req: request, secret });
 
+  // No session? Redirect to login
   if (!token) {
     const loginUrl = new URL("/auth/login", request.url);
     loginUrl.searchParams.set("callbackUrl", request.nextUrl.pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  try {
-    const decoded = jwt.verify(token, secret) as any;
-    const role = decoded.role;
-    const path = request.nextUrl.pathname;
+  // Role-based access control
+  const role = token.role;
+  const path = request.nextUrl.pathname;
 
-    if (path.startsWith("/organization") && !["admin"].includes(role)) {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
-
-    // Add more access rules as needed
-
-    return NextResponse.next();
-  } catch (err) {
-    console.error("JWT decode failed:", err);
-    const loginUrl = new URL("/auth/login", request.url);
-    loginUrl.searchParams.set("callbackUrl", request.nextUrl.pathname);
-    return NextResponse.redirect(loginUrl);
+  if (path.startsWith("/organization") && role !== "admin") {
+    return NextResponse.redirect(new URL("/", request.url));
   }
+
+  return NextResponse.next();
 }
 
 export const config = {

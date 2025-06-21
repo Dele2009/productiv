@@ -8,6 +8,8 @@ const Department = sequelize.define("Department", {
     primaryKey: true,
   },
   name: { type: DataTypes.STRING, allowNull: false },
+  description: { type: DataTypes.STRING, allowNull: false },
+  status: { type: DataTypes.ENUM("active", "inactive" , "suspended") },
 });
 
 export default Department;

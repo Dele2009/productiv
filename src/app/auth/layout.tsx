@@ -1,3 +1,4 @@
+import Logo from "@/components/logo";
 import { ThemeToggle } from "@/components/themetoggler";
 import { Metadata } from "next";
 
@@ -12,13 +13,12 @@ export default function AuthLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="flex flex-col items-center justify-center min-h-screen bg-muted py-20 relative">
-        {children}
-        <div className="fixed bottom-10 right-10">
-          <ThemeToggle />
-        </div>
-      </body>
-    </html>
+    <main className="flex flex-col gap-5 items-center justify-center min-h-screen py-20 relative">
+      <Logo />
+      {children}
+      <div className="fixed bottom-10 right-10">
+        <ThemeToggle />
+      </div>
+    </main>
   );
 }

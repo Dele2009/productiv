@@ -17,8 +17,9 @@ import {
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle2Icon } from "lucide-react";
-import { getSession, signIn } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 const adminLoginSchema = yup.object({
   email: yup.string().email("Invalid email").required("Email required"),
@@ -61,10 +62,8 @@ export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [errorMsg, setErrorMsg] = useState("");
-  const callbackUrl = (searchParams.get("callbackUrl")) || "";
-  const [activeTab, setActiveTab] = useState<"admin" | "employee" | string>(
-    "admin"
-  );
+  const callbackUrl = searchParams.get("callbackUrl") || "";
+  const [activeTab, setActiveTab] = useState<"admin" | "employee" | string>("admin");
 
   // Admin form
   const {
@@ -97,161 +96,148 @@ export default function LoginPage() {
     });
     console.log(res);
     if (res?.error) return setErrorMsg(res.error || "Invalid Credentials");
-
-    // Wait for session to be updated
-    const session = await getSession();
-    console.log(session);
-
-    const slug = session?.user?.organization?.slug;
-
-    router.push(callbackUrl || `/organization/${slug}/dashboard`);
+    router.push(callbackUrl || "/organization/dashboard");
   };
 
   const onEmployeeSubmit = async (data: EmployeeLoginData) => {
-    // setErrorMsg("");
-    try {
-      // If you want to handle employees separately, you'd need
-      // to adjust your CredentialsProvider to check these credentials.
-      // But normally you'd reuse "credentials":
-      const res = await signIn("credentials", {
-        email: data.email,
-        password: data.orgPasscode,
-        employeeId: data.employeeId,
-        role: "employee",
-      });
+    setErrorMsg("");
 
-      console.log(res);
-    } catch {
-      // setErrorMsg("Login failed.");
-    }
+    const res = await signIn("credentials", {
+      email: data.email,
+      password: data.orgPasscode,
+      employeeId: data.employeeId,
+      role: "employee",
+    });
+
+    console.log(res);
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-muted px-4">
-      <Card className="w-full max-w-lg shadow-xl">
-        <CardContent className="p-8 space-y-6">
-          <h2 className="text-2xl font-bold text-center">
-            Login to your account
-          </h2>
-          {errorMsg && <SignInError error={errorMsg as keyof Errors} />}
+    <Card className="w-full max-w-lg shadow-xl">
+      <CardContent className="p-8 space-y-6">
+        <h2 className="text-2xl font-bold text-center">
+          Login to your account
+        </h2>
+        {errorMsg && <SignInError error={errorMsg as keyof Errors} />}
 
-          <Tabs value={activeTab} onValueChange={onTabChange}>
-            <TabsList className="mb-6 w-full">
-              <TabsTrigger value="admin">Admin</TabsTrigger>
-              <TabsTrigger value="employee">Employee</TabsTrigger>
-            </TabsList>
+        <Tabs value={activeTab} onValueChange={onTabChange}>
+          <TabsList className="mb-6 w-full">
+            <TabsTrigger value="admin">Admin</TabsTrigger>
+            <TabsTrigger value="employee">Employee</TabsTrigger>
+          </TabsList>
 
-            {/* Admin Login Form */}
-            <TabsContent value="admin">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Admin Login</CardTitle>
-                  <CardDescription>
-                    Please enter your admin credentials to access your
-                    dashboard.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="grid gap-6">
-                  <form
-                    onSubmit={handleSubmitAdmin(onAdminSubmit)}
-                    className="space-y-6"
+          {/* Admin Login Form */}
+          <TabsContent value="admin">
+            <Card>
+              <CardHeader>
+                <CardTitle>Admin Login</CardTitle>
+                <CardDescription>
+                  Please enter your admin credentials to access your dashboard.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-6">
+                <form
+                  onSubmit={handleSubmitAdmin(onAdminSubmit)}
+                  className="space-y-6"
+                >
+                  <div className="space-y-2">
+                    <Label>Email</Label>
+                    <Input placeholder="Email" {...registerAdmin("email")} />
+                    <p className="text-sm text-red-500">
+                      {adminErrors.email?.message}
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Password</Label>
+                    <Input
+                      type="password"
+                      placeholder="Password"
+                      {...registerAdmin("password")}
+                    />
+                    <p className="text-sm text-red-500">
+                      {adminErrors.password?.message}
+                    </p>
+                  </div>
+
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={adminSubmitting}
                   >
-                    <div className="space-y-2">
-                      <Label>Email</Label>
-                      <Input placeholder="Email" {...registerAdmin("email")} />
-                      <p className="text-sm text-red-500">
-                        {adminErrors.email?.message}
-                      </p>
-                    </div>
+                    {adminSubmitting ? "Logging in..." : "Login as Admin"}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-                    <div className="space-y-2">
-                      <Label>Password</Label>
-                      <Input
-                        type="password"
-                        placeholder="Password"
-                        {...registerAdmin("password")}
-                      />
-                      <p className="text-sm text-red-500">
-                        {adminErrors.password?.message}
-                      </p>
-                    </div>
+          {/* Employee Login Form */}
+          <TabsContent value="employee">
+            <Card>
+              <CardHeader>
+                <CardTitle>Employee</CardTitle>
+                <CardDescription>
+                  Please enter your employee credentials to access your
+                  dashboard.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-6">
+                <form
+                  onSubmit={handleSubmitEmployee(onEmployeeSubmit)}
+                  className="space-y-6"
+                >
+                  <div className="space-y-2">
+                    <Label>Email</Label>
+                    <Input placeholder="Email" {...registerEmployee("email")} />
+                    <p className="text-sm text-red-500">
+                      {employeeErrors.email?.message}
+                    </p>
+                  </div>
 
-                    <Button
-                      type="submit"
-                      className="w-full"
-                      disabled={adminSubmitting}
-                    >
-                      {adminSubmitting ? "Logging in..." : "Login as Admin"}
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
-            </TabsContent>
+                  <div className="space-y-2">
+                    <Label>Employee ID</Label>
+                    <Input
+                      placeholder="Employee ID"
+                      {...registerEmployee("employeeId")}
+                    />
+                    <p className="text-sm text-red-500">
+                      {employeeErrors.employeeId?.message}
+                    </p>
+                  </div>
 
-            {/* Employee Login Form */}
-            <TabsContent value="employee">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Employee</CardTitle>
-                  <CardDescription>
-                    Please enter your employee credentials to access your
-                    dashboard.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="grid gap-6">
-                  <form
-                    onSubmit={handleSubmitEmployee(onEmployeeSubmit)}
-                    className="space-y-6"
+                  <div className="space-y-2">
+                    <Label>Organization Passcode</Label>
+                    <Input
+                      placeholder="Organization Passcode"
+                      {...registerEmployee("orgPasscode")}
+                    />
+                    <p className="text-sm text-red-500">
+                      {employeeErrors.orgPasscode?.message}
+                    </p>
+                  </div>
+
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={employeeSubmitting}
                   >
-                    <div className="space-y-2">
-                      <Label>Email</Label>
-                      <Input
-                        placeholder="Email"
-                        {...registerEmployee("email")}
-                      />
-                      <p className="text-sm text-red-500">
-                        {employeeErrors.email?.message}
-                      </p>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Employee ID</Label>
-                      <Input
-                        placeholder="Employee ID"
-                        {...registerEmployee("employeeId")}
-                      />
-                      <p className="text-sm text-red-500">
-                        {employeeErrors.employeeId?.message}
-                      </p>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Organization Passcode</Label>
-                      <Input
-                        placeholder="Organization Passcode"
-                        {...registerEmployee("orgPasscode")}
-                      />
-                      <p className="text-sm text-red-500">
-                        {employeeErrors.orgPasscode?.message}
-                      </p>
-                    </div>
-
-                    <Button
-                      type="submit"
-                      className="w-full"
-                      disabled={employeeSubmitting}
-                    >
-                      {employeeSubmitting
-                        ? "Logging in..."
-                        : "Login as Employee"}
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
-    </div>
+                    {employeeSubmitting ? "Logging in..." : "Login as Employee"}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+        {activeTab === "admin" && (
+          <p className="text-center text-sm">
+            Dont have an organization?{" "}
+            <Link href="/auth/register" className="text-primary underline">
+              Register one
+            </Link>
+          </p>
+        )}
+      </CardContent>
+    </Card>
   );
 }

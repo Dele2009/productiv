@@ -69,6 +69,12 @@ export default function Dashboard({ data }: DashboardProps) {
     completed: { label: "Tasks Completed", color: "#06B6D4" },
   };
 
+  const chartCount = data.chartData.reduce((arr, data) => {
+    arr.completed = arr.completed + data.completed
+    arr.created = arr.created + data.created;
+    return arr
+  }, {created: 0, completed: 0})
+
   return (
     <div className="p-6 space-y-10">
       {/* KPI Cards */}
@@ -211,7 +217,7 @@ export default function Dashboard({ data }: DashboardProps) {
           </div>
         </CardHeader>
         <CardContent>
-          {data.chartData.length > 0 ? (
+          {chartCount[activeSeries] > 0 ? (
             <ChartContainer config={chartConfig} className="min-h-[200px]">
               <BarChart data={data.chartData}>
                 <CartesianGrid vertical={false} stroke="#E5E5E5" />

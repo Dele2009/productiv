@@ -1,8 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/db";
 import bcrypt from "bcrypt";
-
-import { signToken } from "../utils/auth";
+import jwt from "jsonwebtoken";
 
 const User = sequelize.define(
   "User",
@@ -48,7 +47,11 @@ const User = sequelize.define(
 // Add instance method to generate verification token
 
 (User as any).prototype.generateVerificationToken = function () {
-  const token = signToken({ id: this.id, email: this.email }, "1d");
+  const token = jwt.sign(
+    { id: this.id, email: this.email },
+    process.env.JWT_SECRET!,
+    { expiresIn: "1d" }
+  );
   return token;
 };
 
