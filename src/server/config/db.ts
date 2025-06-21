@@ -34,11 +34,12 @@ export default sequelize;
 export async function initDB() {
   try {
     await sequelize.authenticate();
-    if (!isProd) {
-      await sequelize.sync({ alter: true });
-    } else {
-      await sequelize.sync();
-    }
+    await sequelize.sync({ alter: true });
+    // if (!isProd) {
+    //   await sequelize.sync({ alter: true });
+    // } else {
+    //   await sequelize.sync();
+    // }
     console.log("✅ DB connected and synced");
   } catch (err) {
     console.error("❌ DB connection failed:", err);
