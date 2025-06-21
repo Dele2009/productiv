@@ -18,7 +18,7 @@ const handleGet = async ({ user }: HandlerArgs) => {
   const departmentsCount = await Department.count({
     where: { OrganizationId },
   });
-  const membersCount = await User.count({ where: { OrganizationId } });
+  const membersCount = await User.count({ where: { organizationId: OrganizationId } });
   const openTasksCount = await Task.count({
     where: { OrganizationId, status: "open" },
   });
