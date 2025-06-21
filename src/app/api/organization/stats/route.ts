@@ -12,24 +12,24 @@ import {
 const handleGet = async ({ user }: HandlerArgs) => {
   await initDB();
 
-  const orgId = user.organization.id;
+  const OrganizationId = user.organization.id;
 
   // KPI Stats
   const departmentsCount = await Department.count({
-    where: { organizationId: orgId },
+    where: { OrganizationId },
   });
-  const membersCount = await User.count({ where: { organizationId: orgId } });
+  const membersCount = await User.count({ where: { OrganizationId } });
   const openTasksCount = await Task.count({
-    where: { organizationId: orgId, status: "open" },
+    where: { OrganizationId, status: "open" },
   });
   const closedTasksCount = await Task.count({
-    where: { organizationId: orgId, status: "closed" },
+    where: { OrganizationId, status: "closed" },
   });
   const activityLogsCount = 10; // Replace with actual activity logs count when available
 
   // Departments with member count and open tasks
   const departments = await Department.findAll({
-    where: { organizationId: orgId },
+    where: { OrganizationId },
     include: [
       {
         model: User,
@@ -74,7 +74,7 @@ const handleGet = async ({ user }: HandlerArgs) => {
     dates.map(async (date) => {
       const created = await Task.count({
         where: {
-          organizationId: orgId,
+          OrganizationId,
           createdAt: {
             [Op.between]: [
               new Date(`${date}T00:00:00`),
@@ -85,7 +85,7 @@ const handleGet = async ({ user }: HandlerArgs) => {
       });
       const completed = await Task.count({
         where: {
-          organizationId: orgId,
+          OrganizationId,
           status: "closed",
           updatedAt: {
             [Op.between]: [
