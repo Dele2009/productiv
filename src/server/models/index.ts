@@ -4,10 +4,10 @@ import Task from "./task";
 import Team from "./team";
 import Token from "./token";
 import User from "./user";
+import UserMembership from "./user-membership";
 // import UserMembership from "./user-membership";
 
 // initAssociations.ts
-User.hasMany(Task, { as: "tasks" });
 
 User.hasOne(Token);
 Token.belongsTo(User);
@@ -44,19 +44,33 @@ Department.belongsTo(Organization);
 
 Task.belongsTo(Organization);
 Task.belongsTo(Department);
+
+User.hasMany(Task);
 Task.belongsTo(User);
 
 Department.hasMany(Task);
 
-User.belongsToMany(Department, { through: "UserMembership" });
-Department.belongsToMany(User, { through: "UserMembership" });
+User.belongsToMany(Department, {
+  through: UserMembership,
+  foreignKey: "userId",
+  otherKey: "departmentId",
+});
+
+Department.belongsToMany(User, {
+  through: UserMembership,
+  foreignKey: "departmentId",
+  otherKey: "userId",
+});
+
+UserMembership.belongsTo(Organization, { foreignKey: "organizationId" });
+Organization.hasMany(UserMembership, { foreignKey: "organizationId" });
 
 export {
   User,
   Organization,
   Task,
   Department,
-  // , UserMembership
+  UserMembership,
   Token,
   Team,
 };

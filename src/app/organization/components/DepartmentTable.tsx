@@ -17,6 +17,7 @@ import {
   CalendarClock,
 } from "lucide-react";
 import { Department } from "../departments/Department";
+import Link from "next/link";
 
 interface Props {
   departments: Department[];
@@ -69,13 +70,11 @@ export const DepartmentTable = ({ departments }: Props) => {
                 </div>
               </TableCell>
               <TableCell className="text-right space-x-2">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => alert(`Manage ${dept.name}`)}
-                >
-                  <Settings className="w-4 h-4 mr-1" /> Manage
+                  <Link href={`/organization/departments/${dept.id}/manage`}>
+                <Button size="sm" variant="outline">
+                    <Settings className="w-4 h-4 mr-1" /> Manage{" "}
                 </Button>
+                  </Link>
                 <Button
                   size="sm"
                   variant="outline"

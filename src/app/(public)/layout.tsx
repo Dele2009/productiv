@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/themetoggler";
 import { auth } from "@/auth";
-import { NavUser } from "@/components/nav-user";
 import Logo from "@/components/logo";
 
 export default async function PublicLayout({
@@ -27,7 +26,9 @@ export default async function PublicLayout({
               </Link>
             </>
           ) : (
-            <NavUser />
+            <Link href="/organization/dashboard">
+              <Button variant="outline">Dashboard</Button>
+            </Link>
           )}
           <ThemeToggle />
         </nav>

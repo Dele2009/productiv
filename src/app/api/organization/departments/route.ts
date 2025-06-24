@@ -1,5 +1,4 @@
 // app/api/organization/[orgSlug]/departments/create/route.ts
-import { initDB } from "@/server/config/db";
 import { Organization, User } from "@/server/models";
 import {
   CreateDepartmentSchema,
@@ -15,7 +14,6 @@ const handlePost = async ({
   data,
   user,
 }: HandlerArgs<CreateDepartmentSchema>) => {
-  await initDB();
   const { id } = user.organization;
   const organization = await Organization.findByPk(id);
 

@@ -3,15 +3,12 @@ export const runtime = "nodejs";
 import { NextResponse } from "next/server";
 import { Op } from "sequelize";
 import { User, Task, Department } from "@/server/models";
-import { initDB } from "@/server/config/db";
 import {
   HandlerArgs,
   withValidationAndRole,
 } from "@/server/utils/withValidateAndRole";
 
 const handleGet = async ({ user }: HandlerArgs) => {
-  await initDB();
-
   const OrganizationId = user.organization.id;
 
   // KPI Stats

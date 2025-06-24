@@ -1,7 +1,6 @@
 export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
-import { initDB } from "@/server/config/db";
 import {
   HandlerArgs,
   withValidationAndRole,
@@ -12,7 +11,6 @@ import { sendVerificationEmail } from "@/server/utils/mailer";
 import { getBaseUrl } from "@/server/utils/helpers";
 
 const handlePost = async ({ data, req }: HandlerArgs<RegisterOwnerData>) => {
-  await initDB();
   const {
     email,
     c_password,

@@ -16,10 +16,11 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { CheckCircle2Icon } from "lucide-react";
+import { CheckCircle2Icon, Loader2 } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { PasswordInput } from "@/components/ui/passwordinput";
 
 const adminLoginSchema = yup.object({
   email: yup.string().email("Invalid email").required("Email required"),
@@ -63,7 +64,9 @@ export default function LoginPage() {
   const searchParams = useSearchParams();
   const [errorMsg, setErrorMsg] = useState("");
   const callbackUrl = searchParams.get("callbackUrl") || "";
-  const [activeTab, setActiveTab] = useState<"admin" | "employee" | string>("admin");
+  const [activeTab, setActiveTab] = useState<"admin" | "employee" | string>(
+    "admin"
+  );
 
   // Admin form
   const {
@@ -150,8 +153,7 @@ export default function LoginPage() {
 
                   <div className="space-y-2">
                     <Label>Password</Label>
-                    <Input
-                      type="password"
+                    <PasswordInput
                       placeholder="Password"
                       {...registerAdmin("password")}
                     />
@@ -165,6 +167,10 @@ export default function LoginPage() {
                     className="w-full"
                     disabled={adminSubmitting}
                   >
+                    {adminSubmitting && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+
                     {adminSubmitting ? "Logging in..." : "Login as Admin"}
                   </Button>
                 </form>
@@ -208,7 +214,7 @@ export default function LoginPage() {
 
                   <div className="space-y-2">
                     <Label>Organization Passcode</Label>
-                    <Input
+                    <PasswordInput
                       placeholder="Organization Passcode"
                       {...registerEmployee("orgPasscode")}
                     />
@@ -222,6 +228,10 @@ export default function LoginPage() {
                     className="w-full"
                     disabled={employeeSubmitting}
                   >
+                    {employeeSubmitting && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+
                     {employeeSubmitting ? "Logging in..." : "Login as Employee"}
                   </Button>
                 </form>

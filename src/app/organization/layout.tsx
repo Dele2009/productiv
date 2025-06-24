@@ -22,18 +22,18 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   return (
-        <Load>
-          <SidebarProvider>
-            <AppSidebar />
-            <SidebarInset>
-              <header className="flex justify-between h-16 shrink-0 items-center gap-2">
-                <div className="flex items-center gap-2 px-4">
-                  <SidebarTrigger className="-ml-1" />
-                  <Separator
-                    orientation="vertical"
-                    className="mr-2 data-[orientation=vertical]:h-4"
-                  />
-                  {/* <Breadcrumb>
+    <Load>
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>
+          <header className="flex justify-between h-16 shrink-0 items-center gap-2">
+            <div className="flex items-center gap-2 px-4">
+              <SidebarTrigger className="-ml-1" />
+              <Separator
+                orientation="vertical"
+                className="mr-2 data-[orientation=vertical]:h-4"
+              />
+              {/* <Breadcrumb>
                   <BreadcrumbList>
                     <BreadcrumbItem className="hidden md:block">
                       <BreadcrumbLink href="#">
@@ -46,12 +46,12 @@ export default function DashboardLayout({
                     </BreadcrumbItem>
                   </BreadcrumbList>
                 </Breadcrumb> */}
-                </div>
-                <ThemeToggle />
-              </header>
-              {children}
-            </SidebarInset>
-          </SidebarProvider>
-        </Load>
+            </div>
+            <ThemeToggle />
+          </header>
+          <div className="p-10">{children}</div>
+        </SidebarInset>
+      </SidebarProvider>
+    </Load>
   );
 }

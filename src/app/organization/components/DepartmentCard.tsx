@@ -22,6 +22,7 @@ import {
   Settings,
 } from "lucide-react";
 import { Department } from "../departments/Department";
+import Link from "next/link";
 
 interface Props {
   departments: Department[];
@@ -53,11 +54,11 @@ export const DepartmentCard = ({ departments }: Props) => {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    onClick={() => alert(`Managing ${dept.name}`)}
-                  >
-                    <Settings className="w-4 h-4 mr-2" /> Manage
-                  </DropdownMenuItem>
+                  <Link href={`/organization/departments/${dept.id}/manage`}>
+                    <DropdownMenuItem>
+                      <Settings className="w-4 h-4 mr-2" /> Manage
+                    </DropdownMenuItem>
+                  </Link>
                   <DropdownMenuItem
                     onClick={() => alert(`Toggling suspend for ${dept.name}`)}
                   >

@@ -20,7 +20,8 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { CheckCircle2Icon } from "lucide-react";
+import { CheckCircle2Icon, Loader2 } from "lucide-react";
+import { PasswordInput } from "@/components/ui/passwordinput";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -88,8 +89,7 @@ export default function RegisterPage() {
               </div>
               <div className="grid w-full max-w-sm items-center gap-3">
                 <Label>Password</Label>
-                <Input
-                  type="password"
+                <PasswordInput
                   placeholder="Password"
                   {...register("password")}
                 />
@@ -99,8 +99,7 @@ export default function RegisterPage() {
               </div>
               <div className="grid w-full max-w-sm items-center gap-3">
                 <Label>Confirm Password</Label>
-                <Input
-                  type="password"
+                <PasswordInput
                   placeholder="Password"
                   {...register("c_password")}
                 />
@@ -198,6 +197,7 @@ export default function RegisterPage() {
           </div>
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {isSubmitting ? "Registering..." : "Register Organization"}
           </Button>
         </form>

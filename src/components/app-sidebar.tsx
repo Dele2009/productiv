@@ -5,6 +5,7 @@ import {
   BookOpen,
   Bot,
   Frame,
+  Home,
   LifeBuoy,
   Map,
   PieChart,
@@ -28,122 +29,104 @@ import {
 } from "@/components/ui/sidebar";
 import Logo from "./logo";
 
-const navData = {
-  navMain: [
-    {
-      title: "Departments",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "New Department",
-          url: "#",
-        },
-        {
-          title: "View Departments",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Employees",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "New Employee",
-          url: "#",
-        },
-        {
-          title: "View Employee",
-          url: "#",
-        },
-        // {
-        //   title: "Quantum",
-        //   url: "#",
-        // },
-      ],
-    },
-    {
-      title: "Task",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Support",
-      url: "#",
-      icon: LifeBuoy,
-    },
-    {
-      title: "Feedback",
-      url: "#",
-      icon: Send,
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
-};
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  // const location = use
+  const navData = {
+    navMain: [
+      {
+        title: "Dashboard",
+        url: "/organization/dashboard",
+        icon: Home,
+        isActive: true,
+      },  
+      {
+        title: "Departments",
+        url: "/organization/departments",
+        icon: SquareTerminal,
+        isActive: true,
+      },
+      {
+        title: "Employees",
+        url: "/organization/employees",
+        icon: Bot,
+      },
+      {
+        title: "Task",
+        url: "#",
+        icon: BookOpen,
+        items: [
+          {
+            title: "Introduction",
+            url: "#",
+          },
+          {
+            title: "Get Started",
+            url: "#",
+          },
+          {
+            title: "Tutorials",
+            url: "#",
+          },
+          {
+            title: "Changelog",
+            url: "#",
+          },
+        ],
+      },
+      {
+        title: "Settings",
+        url: "#",
+        icon: Settings2,
+        items: [
+          {
+            title: "General",
+            url: "#",
+          },
+          {
+            title: "Team",
+            url: "#",
+          },
+          {
+            title: "Billing",
+            url: "#",
+          },
+          {
+            title: "Limits",
+            url: "#",
+          },
+        ],
+      },
+    ],
+    navSecondary: [
+      {
+        title: "Support",
+        url: "#",
+        icon: LifeBuoy,
+      },
+      {
+        title: "Feedback",
+        url: "#",
+        icon: Send,
+      },
+    ],
+    projects: [
+      {
+        name: "Design Engineering",
+        url: "#",
+        icon: Frame,
+      },
+      {
+        name: "Sales & Marketing",
+        url: "#",
+        icon: PieChart,
+      },
+      {
+        name: "Travel",
+        url: "#",
+        icon: Map,
+      },
+    ],
+  };
 
   return (
     <Sidebar variant="inset" {...props}>
@@ -151,7 +134,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-             <Logo/>
+              <Logo />
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

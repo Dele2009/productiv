@@ -1,12 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { LayoutGrid, Table } from "lucide-react";
 import { DepartmentCard } from "../components/DepartmentCard";
 import { DepartmentTable } from "../components/DepartmentTable";
 import { DepartmentFormModal } from "../components/DepartmentFormModal";
 import { useRouter } from "next/navigation";
+import { ToggleView } from "@/components/shared/toggle-view";
 
 export interface Department {
   id: string;
@@ -47,18 +46,7 @@ export default function DepartmentClient({ departments }: Props) {
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold">Departments</h2>
         <div className="flex gap-2 items-center">
-          <Button
-            variant={view === "card" ? "default" : "outline"}
-            onClick={() => toggleView("card")}
-          >
-            <LayoutGrid className="w-5 h-5 mr-1" /> Card
-          </Button>
-          <Button
-            variant={view === "table" ? "default" : "outline"}
-            onClick={() => toggleView("table")}
-          >
-            <Table className="w-5 h-5 mr-1" /> Table
-          </Button>
+          <ToggleView view={view} onChange={toggleView}/>
           {/* <Button onClick={() => setShowModal(true)}>
             <Plus className="w-5 h-5 mr-1" /> New Department
           </Button> */}

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { AnySchema } from "yup";
 import { validateSchema } from "./validate";
 import { auth } from "@/auth";
+import { initDB } from "../config/db";
 
 export type HandlerArgs<T = any> = {
   data: T | null;
@@ -66,6 +67,7 @@ export function withValidationAndRole<T>(
     }
 
     try {
+      await initDB()
       return await handler({
         data,
         req,

@@ -16,7 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { CheckCircle2, Plus, PlusCircle, ShieldAlert } from "lucide-react";
+import { CheckCircle2, Loader2, Plus, PlusCircle, ShieldAlert } from "lucide-react";
 import Image from "next/image";
 import {
   CreateDepartmentSchema,
@@ -120,6 +120,10 @@ export function DepartmentFormModal({ onDepartmentCreated }: Props) {
               </Button>
             </DialogClose>
             <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
+
               {isSubmitting ? "Creating..." : "Create Department"}
             </Button>
           </DialogFooter>
