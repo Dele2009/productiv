@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/sidebar";
 import Load from "./components/loader";
 import { ThemeToggle } from "@/components/themetoggler";
+import { ForceSetupOrganizationModal } from "@/components/ForceSetupOrganizationModal";
 
 export default function DashboardLayout({
   children,
@@ -50,6 +51,7 @@ export default function DashboardLayout({
             <ThemeToggle />
           </header>
           <div className="p-10">{children}</div>
+          <ForceSetupOrganizationModal />
         </SidebarInset>
       </SidebarProvider>
     </Load>

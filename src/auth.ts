@@ -69,6 +69,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               name: user.adminOf.name,
               slug: user.adminOf.slug,
               avatar: user.adminOf.logoUrl,
+              passcode: !!user.adminOf.passcode,
             },
           };
         } else if (credentials.role === "employee") {

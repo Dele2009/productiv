@@ -11,6 +11,7 @@ declare module "next-auth" {
       name: string;
       slug: string;
       avatar: string;
+      passcode?: boolean;
     };
   }
 
